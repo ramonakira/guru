@@ -1,6 +1,6 @@
 # Guru HTML linter
 
-Guru is a javascript to lint html in the browser using css selectors. This way, you're not dependent on browserspecific plugins or other third-party tools to verify your website.
+Guru is a javascript to lint html in the browser using css selectors based on an [article by bitsofco.de](https://bitsofco.de/linting-html-using-css/). This way, you're not dependent on browserspecific plugins or other third-party tools to verify your website.
 
 ## Setup
 
