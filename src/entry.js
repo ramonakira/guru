@@ -34,5 +34,7 @@ let hinters = [{
 
 
 document.addEventListener('DOMContentLoaded', function() {
+    var debugger_element = document.createElement('debugger');
+    document.body.appendChild(debugger_element);
     riot.mount('debugger', {hinters: hinters});
 });

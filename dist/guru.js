@@ -2944,6 +2944,8 @@ var hinters = [{
 
 
 document.addEventListener('DOMContentLoaded', function() {
+    var debugger_element = document.createElement('debugger');
+    document.body.appendChild(debugger_element);
     riot$1.mount('debugger', {hinters: hinters});
 });
 
