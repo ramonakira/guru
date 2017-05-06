@@ -14,7 +14,7 @@ function createCommonjsModule(fn, module) {
 }
 
 var riot_1 = createCommonjsModule(function (module, exports) {
-/* Riot v3.4.1, @license MIT */
+/* Riot v3.4.4, @license MIT */
 (function (global, factory) {
 	factory(exports);
 }(commonjsGlobal, (function (exports) { 'use strict';
@@ -150,7 +150,7 @@ var check = Object.freeze({
  * @returns { Object } dom nodes found
  */
 function $$(selector, ctx) {
-  return (ctx || document).querySelectorAll(selector)
+  return Array.prototype.slice.call((ctx || document).querySelectorAll(selector))
 }
 
 /**
@@ -1085,6 +1085,10 @@ function setEventHandler(name, handler, dom, tag) {
   var eventName,
     cb = handleEvent.bind(tag, dom, handler);
 
+  // avoid to bind twice the same event
+  // possible fix for #2332
+  dom[name] = null;
+
   // normalize event name
   eventName = name.replace(RE_EVENTS_PREFIX, '');
 
@@ -1114,7 +1118,6 @@ function updateDataIs(expr, parent, tagName) {
   isVirtual = expr.dom.tagName === 'VIRTUAL';
   // sync _parent to accommodate changing tagnames
   if (expr.tag) {
-
     // need placeholder before unmount
     if(isVirtual) {
       head = expr.tag.__.head;
@@ -1124,6 +1127,8 @@ function updateDataIs(expr, parent, tagName) {
 
     expr.tag.unmount(true);
   }
+
+  if (!isString(tagName)) { return }
 
   expr.impl = __TAG_IMPL[tagName];
   conf = {root: expr.dom, parent: parent, hasImpl: true, tagName: tagName};
@@ -1175,6 +1180,7 @@ function updateExpression(expr) {
     // detect the style attributes
     isStyleAttr = attrName === 'style',
     isClassAttr = attrName === 'class',
+    hasValue,
     isObj,
     value;
 
@@ -1195,7 +1201,8 @@ function updateExpression(expr) {
   if (expr.update) { return expr.update() }
 
   // ...it seems to be a simple expression so we try to calculat its value
-  value = tmpl(expr.expr, this);
+  value = tmpl(expr.expr, isToggle ? extend(Object.create(this.parent), this) : this);
+  hasValue = !isBlank(value);
   isObj = isObject(value);
 
   // convert the style/class objects to strings
@@ -1206,6 +1213,12 @@ function updateExpression(expr) {
     } else if (isStyleAttr) {
       value = styleObjectToString(value);
     }
+  }
+
+  // remove original attribute
+  if (expr.attr && (!expr.isAttrRemoved || !hasValue)) {
+    remAttr(dom, expr.attr);
+    expr.isAttrRemoved = true;
   }
 
   // for the boolean attributes we don't need the value
@@ -1242,11 +1255,6 @@ function updateExpression(expr) {
     return
   }
 
-  // remove original attribute
-  if (!expr.isAttrRemoved || !value) {
-    remAttr(dom, expr.attr);
-    expr.isAttrRemoved = true;
-  }
 
   // event handler
   if (isFunction(value)) {
@@ -1264,7 +1272,7 @@ function updateExpression(expr) {
       dom.value = value;
     }
 
-    if (!isBlank(value) && value !== false) {
+    if (hasValue && value !== false) {
       setAttr(dom, attrName, value);
     }
 
@@ -1345,11 +1353,7 @@ var RefExpr = {
 
     // the name changed, so we need to remove it from the old key (if present)
     if (!isBlank(old) && customParent) { arrayishRemove(customParent.refs, old, tagOrDom); }
-
-    if (isBlank(this.value)) {
-      // if the value is blank, we remove it
-      remAttr(this.dom, this.attr);
-    } else {
+    if (!isBlank(this.value)) {
       // add it to the refs of parent tag (this behavior was changed >=3.0)
       if (customParent) { arrayishAdd(
         customParent.refs,
@@ -1359,9 +1363,11 @@ var RefExpr = {
         null,
         this.parent.__.index
       ); }
-      // set the actual DOM attr
-      setAttr(this.dom, this.attr, this.value);
     }
+
+    // if it's the first time we pass here let's remove the ref attribute
+    // #2329
+    if (!old) { remAttr(this.dom, this.attr); }
   },
   unmount: function unmount() {
     var tagOrDom = this.tag || this.dom;
@@ -1520,6 +1526,10 @@ function _each(dom, parent, expr) {
       isObject$$1 = !isArray(items) && !isString(items),
       root = placeholder.parentNode;
 
+    // if this DOM was removed the update here is useless
+    // this condition fixes also a weird async issue on IE in our unit test
+    if (!root) { return }
+
     // object loop. any changes cause full redraw
     if (isObject$$1) {
       hasKeys = items || false;
@@ -1611,6 +1621,7 @@ function _each(dom, parent, expr) {
     // clone the items array
     oldItems = items.slice();
 
+    // this condition is weird u
     root.insertBefore(frag, placeholder);
   };
 
@@ -2029,7 +2040,7 @@ function unregister$1(name) {
   delete __TAG_IMPL[name];
 }
 
-var version$1 = 'v3.4.1';
+var version$1 = 'v3.4.4';
 
 
 var core = Object.freeze({
@@ -2345,9 +2356,6 @@ function Tag$1(impl, conf, innerHTML) {
       }
 
       if (p && !mustKeepRoot) { p.removeChild(el); }
-
-      // the data-is attributes isn't needed anymore, remove it
-      remAttr(el, IS_DIRECTIVE);
     }
 
     if (this.__.virts) {
