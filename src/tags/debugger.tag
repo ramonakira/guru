@@ -1,25 +1,56 @@
 import './debugger-line.tag';
+import './scanner.tag';
+import './toggle-button.tag';
 
 <debugger>
+    <scanner if={scanner_active}></scanner>
+
     <div class="results">
+        <main if={validator_open}>
+            <debugger-line each={opts.hinters} hinter={this}></debugger-line>
+        </main>
+
+        <main if={scanner_open}>
+            <toggle-button onClick={toggleScan} active={scanner_active}>{parent.scanner_active ? 'stop' : 'start'} scan</toggle-button>
+        </main>
+
         <header>
             <h1>guru</h1>
             <div class="options">
-                <div onclick={toggleResults}>{results_open ? "close" : "open"}</div>
+                <toggle-button onclick={toggleScanner} active={scanner_open}>scanner</toggle-button>
+                <toggle-button onclick={toggleValidator} active={validator_open}>validator</toggle-button>
             </div>
         </header>
-
-        <main if={results_open}>
-            <debugger-line each={opts.hinters} hinter={this}></debugger-line>
-        </main>
     </div>
 
     <script>
-    this.results_open = false;
+    this.validator_open = false;
+    this.scanner_open = false;
+    this.scanner_active = false;
 
-    toggleResults(event) {
-        this.results_open = !this.results_open;
+    toggleScanner(event) {
+        this.scanner_open = !this.scanner_open;
     }
+
+    toggleValidator(event) {
+        this.validator_open = !this.validator_open;
+    }
+
+    toggleScan(event) {
+        this.scanner_active = !this.scanner_active;
+        localStorage.setItem('scanner_active', this.scanner_active);
+    }
+
+    this.on('mount', function(event) {
+        this.scanner_active = (localStorage.getItem('scanner_active') == 'true');
+        console.log('debugger mount');
+
+        if (this.scanner_active) {
+            this.scanner_open = true;
+        }
+
+        this.update();
+    });
     </script>
 
     <style>
@@ -31,7 +62,7 @@ import './debugger-line.tag';
     }
 
     main {
-        margin-top: 15px;
+        margin-bottom: 15px;
     }
 
     h1 {

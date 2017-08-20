@@ -1,7 +1,12 @@
 import riot from 'riot';
 import format from 'string-format';
+import Signal from './signal.js';
 
 import './tags/debugger.tag';
+import 'simple-ajax';
+
+import Urls from './urlStore.js';
+var urls = new Urls();
 
 format.extend(String.prototype, {});
 

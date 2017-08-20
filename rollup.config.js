@@ -7,11 +7,13 @@ import progress from 'rollup-plugin-progress';
 import filesize from 'rollup-plugin-filesize'
 import uglify from 'rollup-plugin-uglify';
 import conditional from "rollup-plugin-conditional";
+import builtins from 'rollup-plugin-node-builtins';
 
 const isProduction = process.env.BUILD_TARGET === "PROD";
 
 
 const plugins = [
+    builtins(),
     riot(),
     buble(),
     cjs({
