@@ -1,5 +1,3 @@
-import Dexie from 'dexie';
-
 import Signal from '../src/signal.js';
 import { search } from '../src/utils/search.js';
 import { forEach } from '../src/utils/forEach.js';
@@ -62,10 +60,3 @@ function Urls() {
 }
 
 export default Urls;
-
-    
-    // if (!localStorage.getItem('scanResults')) {
-    //     this.pageScanResults = [];
-    // } else {
-    //     this.pageScanResults = JSON.parse(localStorage.getItem('scanResults'));
-    // }

@@ -1,5 +1,3 @@
-import Dexie from 'dexie';
-
 import Signal from '../../src/signal.js';
 
 

@@ -24,7 +24,6 @@
     "rollup-watch": "^3.2.2"
   },
   "dependencies": {
-    "dexie": "^1.5.1",
     "pico-ajax": "^0.1.5",
     "riot": "^3.6.0",
     "simple-ajax": "^2.6.0",
