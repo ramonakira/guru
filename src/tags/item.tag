@@ -16,7 +16,7 @@
     }
 
     toggleHighlightElement(event) {
-        this.opts.element.style.border = (!this.elementHighlighted) ? '4px solid red': '';
+        this.opts.element.style.outline = (!this.elementHighlighted) ? '4px solid red': '';
         this.elementHighlighted = !this.elementHighlighted;
     }
     </script>

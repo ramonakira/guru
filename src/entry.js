@@ -34,6 +34,9 @@ let hinters = [{
 }, {
     description: 'Incorrect character set',
     selector: 'meta[charset]:not([charset="UTF-8"])',
+}, {
+    description: 'Absolute links to current domain',
+    selector: 'a[href^=\''+window.location.origin+'\']',
 }
 ];
 

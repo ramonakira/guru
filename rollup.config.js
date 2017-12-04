@@ -32,9 +32,11 @@ const plugins = [
     ])
 ];
 
-export default {
-  dest: isProduction ? 'dist/guru.min.js' : 'dist/guru.js',
-  entry: 'src/entry.js',
-  format: 'iife',
-  plugins,
-}
+export default [ {
+  input: 'src/entry.js',
+  output: {
+    file: isProduction ? 'dist/guru.min.js' : 'dist/guru.js',
+    format: 'iife',
+  },
+  plugins
+}]

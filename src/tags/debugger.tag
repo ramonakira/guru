@@ -10,23 +10,24 @@ import './toggle-button.tag';
             <debugger-line each={opts.hinters} hinter={this}></debugger-line>
         </main>
 
-        <main if={scanner_open}>
+        <main if={scanner_open} if={feature_scanner_enabled}>
             <toggle-button onClick={toggleScan} active={scanner_active}>{parent.scanner_active ? 'stop' : 'start'} scan</toggle-button>
         </main>
 
         <header>
             <h1>guru</h1>
             <div class="options">
-                <toggle-button onclick={toggleScanner} active={scanner_open}>scanner</toggle-button>
+                <toggle-button onclick={toggleScanner} active={scanner_open} if={feature_scanner_enabled}>scanner</toggle-button>
                 <toggle-button onclick={toggleValidator} active={validator_open}>validator</toggle-button>
             </div>
         </header>
     </div>
 
     <script>
-    this.validator_open = false;
+    this.validator_open = localStorage.getItem('validator_open') == 'true' || false;
     this.scanner_open = false;
     this.scanner_active = false;
+    this.feature_scanner_enabled = false;
 
     toggleScanner(event) {
         this.scanner_open = !this.scanner_open;
@@ -34,16 +35,20 @@ import './toggle-button.tag';
 
     toggleValidator(event) {
         this.validator_open = !this.validator_open;
+        localStorage.setItem('validator_open', this.validator_open);
     }
 
     toggleScan(event) {
-        this.scanner_active = !this.scanner_active;
-        localStorage.setItem('scanner_active', this.scanner_active);
+        if (this.feature_scanner_enabled) {
+            this.scanner_active = !this.scanner_active;
+            localStorage.setItem('scanner_active', this.scanner_active);
+        }
     }
 
     this.on('mount', function(event) {
-        this.scanner_active = (localStorage.getItem('scanner_active') == 'true');
-        console.log('debugger mount');
+        if (this.feature_scanner_enabled) {
+            this.scanner_active = (localStorage.getItem('scanner_active') == 'true');
+        }
 
         if (this.scanner_active) {
             this.scanner_open = true;
