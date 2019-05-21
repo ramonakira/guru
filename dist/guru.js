@@ -3968,8 +3968,10 @@ var hinters = [{
 }, {
     description: 'Absolute links to current domain',
     selector: 'a[href^=\''+window.location.origin+'\']',
-}
-];
+}, {
+    description: 'Anchors with external links with missing rel=noreferrer',
+    selector: 'a[href^="https://"]:not([rel*="noreferrer"])'
+}];
 
 
 document.addEventListener('DOMContentLoaded', function() {
