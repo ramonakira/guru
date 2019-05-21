@@ -5,7 +5,7 @@ import './toggle-button.tag';
 <debugger>
     <scanner if={scanner_active}></scanner>
 
-    <div class="results">
+    <div class="guru-results">
         <main if={validator_open}>
             <debugger-line each={opts.hinters} hinter={this}></debugger-line>
         </main>
@@ -14,13 +14,13 @@ import './toggle-button.tag';
             <toggle-button onClick={toggleScan} active={scanner_active}>{parent.scanner_active ? 'stop' : 'start'} scan</toggle-button>
         </main>
 
-        <header>
+        <div class="guru-switch">
             <h1>guru</h1>
-            <div class="options">
+            <div class="guru-options">
                 <toggle-button onclick={toggleScanner} active={scanner_open} if={feature_scanner_enabled}>scanner</toggle-button>
                 <toggle-button onclick={toggleValidator} active={validator_open}>validator</toggle-button>
             </div>
-        </header>
+        </div>
     </div>
 
     <script>
@@ -59,7 +59,7 @@ import './toggle-button.tag';
     </script>
 
     <style>
-    header {
+    .guru-switch {
         display: flex;
         flex-wrap: nowrap;
         justify-content: space-between;
@@ -75,7 +75,7 @@ import './toggle-button.tag';
         color: #b0d6f4;
     }
 
-    .results {
+    .guru-results {
         width: 300px;
         max-height: 100vh;
         position: fixed;
@@ -89,16 +89,16 @@ import './toggle-button.tag';
         transition: height 0.7s;
     }
 
-    .options {
+    .guru-options {
         display: flex;
         flex-direction: row;
     }
 
-    .options > div {
+    .guru-options > div {
         cursor: pointer;
     }
 
-    .options > div:first-child {
+    .guru-options > div:first-child {
         margin-right: 10px;
     }
     </style>
