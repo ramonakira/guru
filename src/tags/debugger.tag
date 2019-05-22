@@ -6,7 +6,11 @@ import './toggle-button.tag';
     <scanner if={scanner_active}></scanner>
 
     <div class="guru-results">
-        <main if={validator_open}>
+        <main if={validator_open && loading}>
+            Loading...
+        </main>
+
+        <main if={validator_open && !loading}>
             <debugger-line each={opts.hinters} hinter={this}></debugger-line>
         </main>
 
@@ -28,6 +32,7 @@ import './toggle-button.tag';
     this.scanner_open = false;
     this.scanner_active = false;
     this.feature_scanner_enabled = false;
+    this.loading = true;
 
     toggleScanner(event) {
         this.scanner_open = !this.scanner_open;
@@ -55,6 +60,12 @@ import './toggle-button.tag';
         }
 
         this.update();
+        var self = this;
+
+        setTimeout(function(){
+            self.loading = false;
+            self.update();
+        }, 1000);
     });
     </script>
 

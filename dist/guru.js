@@ -3150,11 +3150,12 @@ riot$1.tag2('scanner', '<div class="scan_results"> <table> <tr each="{pageScanRe
 riot$1.tag2('toggle-button', '<div class="{btn: true, btn-active: opts.active}"><span><yield></yield></span></div>', 'toggle-button .btn,[data-is="toggle-button"] .btn{ display: inline-block; border: 1px solid transparent; padding: 1px 4px; } toggle-button .btn-active,[data-is="toggle-button"] .btn-active{ border: 1px solid #fff; background-color: #3C7FB2; } toggle-button .btn > span,[data-is="toggle-button"] .btn > span{ -moz-user-select: none; -webkit-user-select: none; -ms-user-select: none; }', '', function(opts) {
 });
 
-riot$1.tag2('debugger', '<scanner if="{scanner_active}"></scanner> <div class="guru-results"> <main if="{validator_open}"> <debugger-line each="{opts.hinters}" hinter="{this}"></debugger-line> </main> <main if="{scanner_open}" if="{feature_scanner_enabled}"> <toggle-button onclick="{toggleScan}" active="{scanner_active}">{parent.scanner_active ? \'stop\' : \'start\'} scan</toggle-button> </main> <div class="guru-switch"> <h1>guru</h1> <div class="guru-options"> <toggle-button onclick="{toggleScanner}" active="{scanner_open}" if="{feature_scanner_enabled}">scanner</toggle-button> <toggle-button onclick="{toggleValidator}" active="{validator_open}">validator</toggle-button> </div> </div> </div>', 'debugger .guru-switch,[data-is="debugger"] .guru-switch{ display: flex; flex-wrap: nowrap; justify-content: space-between; align-items: center; } debugger main,[data-is="debugger"] main{ margin-bottom: 15px; } debugger h1,[data-is="debugger"] h1{ margin: 0; color: #b0d6f4; } debugger .guru-results,[data-is="debugger"] .guru-results{ width: 300px; max-height: 100vh; position: fixed; padding: 10px 15px; bottom: 0px; right: 50px; background-color: #000; z-index: 1000; font-family: sans-serif; color: #fff; transition: height 0.7s; } debugger .guru-options,[data-is="debugger"] .guru-options{ display: flex; flex-direction: row; } debugger .guru-options > div,[data-is="debugger"] .guru-options > div{ cursor: pointer; } debugger .guru-options > div:first-child,[data-is="debugger"] .guru-options > div:first-child{ margin-right: 10px; }', '', function(opts) {
+riot$1.tag2('debugger', '<scanner if="{scanner_active}"></scanner> <div class="guru-results"> <main if="{validator_open && loading}"> Loading... </main> <main if="{validator_open && !loading}"> <debugger-line each="{opts.hinters}" hinter="{this}"></debugger-line> </main> <main if="{scanner_open}" if="{feature_scanner_enabled}"> <toggle-button onclick="{toggleScan}" active="{scanner_active}">{parent.scanner_active ? \'stop\' : \'start\'} scan</toggle-button> </main> <div class="guru-switch"> <h1>guru</h1> <div class="guru-options"> <toggle-button onclick="{toggleScanner}" active="{scanner_open}" if="{feature_scanner_enabled}">scanner</toggle-button> <toggle-button onclick="{toggleValidator}" active="{validator_open}">validator</toggle-button> </div> </div> </div>', 'debugger .guru-switch,[data-is="debugger"] .guru-switch{ display: flex; flex-wrap: nowrap; justify-content: space-between; align-items: center; } debugger main,[data-is="debugger"] main{ margin-bottom: 15px; } debugger h1,[data-is="debugger"] h1{ margin: 0; color: #b0d6f4; } debugger .guru-results,[data-is="debugger"] .guru-results{ width: 300px; max-height: 100vh; position: fixed; padding: 10px 15px; bottom: 0px; right: 50px; background-color: #000; z-index: 1000; font-family: sans-serif; color: #fff; transition: height 0.7s; } debugger .guru-options,[data-is="debugger"] .guru-options{ display: flex; flex-direction: row; } debugger .guru-options > div,[data-is="debugger"] .guru-options > div{ cursor: pointer; } debugger .guru-options > div:first-child,[data-is="debugger"] .guru-options > div:first-child{ margin-right: 10px; }', '', function(opts) {
     this.validator_open = localStorage.getItem('validator_open') == 'true' || false;
     this.scanner_open = false;
     this.scanner_active = false;
     this.feature_scanner_enabled = false;
+    this.loading = true;
 
     this.toggleScanner = function(event) {
         this.scanner_open = !this.scanner_open;
@@ -3182,6 +3183,12 @@ riot$1.tag2('debugger', '<scanner if="{scanner_active}"></scanner> <div class="g
         }
 
         this.update();
+        var self = this;
+
+        setTimeout(function(){
+            self.loading = false;
+            self.update();
+        }, 1000);
     });
 });
 
